@@ -8,14 +8,14 @@
         "build-server": "cd server && npm run build",
         "dist-server": "cd server/dist && mv main.js ../../dist && cp -r ../node_modules ../../dist",
         "dist-client": "cd client/dist && mv *.js index.html ../../dist/public",
-        "build": "concurrently --kill-others-on-fail \"npm run build-server\" \"npm run build-client\"",
+        "build": "concurrently --kill-others-on-fail \"npm run build-server\"",
         "dist": "mkdir -p dist/public && npm run dist-server && npm run dist-client",
         "client": "cd client && npm start",
         "server": "cd server && npm start",
         "start": "concurrently --kill-others-on-fail \"npm run server\"",
         "install-client": "cd client && npm install",
         "install-server": "cd server && npm install",
-        "postinstall": "concurrently \"npm run install-server\" \"npm run install-client\""
+        "postinstall": "concurrently \"npm run install-server\""
     },
     "author": "BrandonMA",
     "license": "MIT",
