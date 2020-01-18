@@ -12,7 +12,7 @@ export default class MessagesController {
             keyFilename: 'controllers/key.json'
         });
         const sessionPath = sessionClient.sessionPath('wizmarkii-bjmaie', sessionId);
-       
+
         // The text query request.
         const request = {
             session: sessionPath,
@@ -23,14 +23,14 @@ export default class MessagesController {
                 },
             },
         };
-       
+
         // Send message and get full response text
         const responses = await sessionClient.detectIntent(request); //detectar intent
 
         console.log(responses[0].queryResult.parameters); //parametros
-        const parametros  = responses[0].queryResult.parameters.fields;
-        
-        
+        const parametros = responses[0].queryResult.parameters.fields;
+
+
 
         const action = responses[0].queryResult.action; //lo que reponde
         const messages = responses[0].queryResult.fulfillmentMessages; //el mensaje
@@ -40,7 +40,7 @@ export default class MessagesController {
         let fulfillmentText = texts.join('\n\n');
 
         const user = await authController.getBySession(sessionId);
-
+        console.log(user);
         console.log(action);
 
         if (action === "nombre") {
@@ -58,27 +58,29 @@ export default class MessagesController {
         } else if (action === "Comenzar-prueba-personadelconflicto") {
             user.persona = message
         }
-
-        if (user.apodo !== undefined) {
-            fulfillmentText = fulfillmentText.replace("v_apodo", user.apodo);
+        if (user.name != undefined) {
+            fulfillmentText = fulfillmentText.replace("v_NombreUsuario",user.name);
         }
-        
+        if (user.apodo == undefined) {
+            fulfillmentText = fulfillmentText.replace("v_apodo", "(Mi Apodo)");
+        }
+
         if (user.empresa !== undefined) {
             fulfillmentText = fulfillmentText.replace("v_empresa", user.empresa);
         }
-        
+
         if (user.edad !== undefined) {
             fulfillmentText = fulfillmentText.replace("v_edad", user.edad.toString());
         }
-        
+
         if (user.sexo !== undefined) {
             fulfillmentText = fulfillmentText.replace("v_sexo", user.sexo);
         }
-        
+
         if (user.name !== undefined) {
             fulfillmentText = fulfillmentText.replace("v_nombre", user.name);
         }
-        
+
         if (user.conflicto != undefined) {
             fulfillmentText = fulfillmentText.replace("v_conflicto", user.conflicto);
         }
@@ -105,7 +107,7 @@ export default class MessagesController {
                 date: new Date(),
                 sender: SenderType.user,
                 fields: parametros,
-                action:action
+                action: action
             }),
             Message.create(botMessage),
             user.save()
