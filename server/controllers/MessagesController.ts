@@ -25,9 +25,15 @@ export default class MessagesController {
         };
        
         // Send message and get full response text
-        const responses = await sessionClient.detectIntent(request);
-        const action = responses[0].queryResult.action;
-        const messages = responses[0].queryResult.fulfillmentMessages;
+        const responses = await sessionClient.detectIntent(request); //detectar intent
+
+        console.log(responses[0].queryResult.parameters); //parametros
+        const parametros  = responses[0].queryResult.parameters.fields;
+        
+        
+
+        const action = responses[0].queryResult.action; //lo que reponde
+        const messages = responses[0].queryResult.fulfillmentMessages; //el mensaje
         const texts: Array<string> = messages.map((message: any) => {
             return message.text.text[0];
         });
@@ -86,7 +92,9 @@ export default class MessagesController {
             userId: sessionId,
             text: fulfillmentText,
             date: new Date(),
-            sender: SenderType.bot
+            sender: SenderType.bot,
+            fields: parametros,
+            action: action
         };
 
         // Save both messages in the database
@@ -95,7 +103,9 @@ export default class MessagesController {
                 userId: sessionId,
                 text: message,
                 date: new Date(),
-                sender: SenderType.user
+                sender: SenderType.user,
+                fields: parametros,
+                action:action
             }),
             Message.create(botMessage),
             user.save()
